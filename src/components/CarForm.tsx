@@ -18,7 +18,10 @@ const carFormSchema = z.object({
   vin: z.string().min(11, "VIN must be at least 11 characters").max(17, "VIN must be at most 17 characters"),
   manufacturer: z.string().min(1, "Manufacturer is required"),
   model: z.string().min(1, "Model is required"),
-  year: z.coerce.number().int().min(1900, "Year must be after 1900").max(new Date().getFullYear() + 1, "Year cannot be in the future"),
+  year: z.preprocess(
+    (val) => (val === '' ? undefined : Number(val)),
+    z.number().int().min(1900, "Year must be after 1900").max(new Date().getFullYear() + 1, "Year cannot be in the future")
+  ),
   fuelType: z.enum(fuelTypes),
   inspectionValidUntil: z.date().optional(),
   insuranceValidUntil: z.date().optional(),
